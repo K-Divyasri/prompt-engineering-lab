@@ -1,0 +1,13 @@
+# Secrets -- never commit real keys.
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Generated data (regenerate with `python generate_data.py`)
+data/*.csv

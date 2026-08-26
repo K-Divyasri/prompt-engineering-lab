@@ -1,0 +1,30 @@
+# pyproject.toml describes the project in the modern, standard way. It lets you
+# run the tool as `prompt-lab ...` after `pip install -e .`, and it's where
+# pytest reads its settings.
+
+[project]
+name = "prompt-lab"
+version = "0.1.0"
+description = "Compare five prompt styles on a support-ticket classification task and score which wins."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+# Install with:  pip install -e ".[real]"   to enable real model calls (--real).
+real = ["litellm>=1.40", "python-dotenv>=1.0"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+# Creates the `prompt-lab` terminal command after an editable install.
+prompt-lab = "prompt_lab.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
