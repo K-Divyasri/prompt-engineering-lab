@@ -5,7 +5,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 
 ## Runs locally
 
-- [ ] Fresh virtual environment, dependencies installed cleanly (from `build_from_scratch/`):
+- [ ] Fresh virtual environment, dependencies installed cleanly (from the repo root):
       `python -m venv .venv ; .\.venv\Scripts\Activate.ps1` then `pip install -r requirements.txt`
 - [ ] The dataset generates without error:
       `python generate_data.py` (writes `data/tickets.csv` + `data/fewshot_examples.csv`)
@@ -18,13 +18,13 @@ haven't actually verified by running the command — "should work" isn't the sam
 
 ## Tests pass
 
-- [ ] `pytest` run from `build_from_scratch/` is all green (27 tests, all offline).
+- [ ] `pytest` run from the repo root is all green (27 tests, all offline).
 - [ ] You ran it in the fresh venv, not just your everyday one, so you know the deps are complete.
 
 ## README is recruiter-ready
 
 - [ ] A root `README.md` exists and covers: the problem, what the tool does, the results, how
-      to run it, and what you learned. (Point deeper detail at `build_from_scratch/README.md`.)
+      to run it, and what you learned.
 - [ ] The measured **results table** (accuracy leaderboard) is pasted in, so the outcome is
       visible without running anything.
 - [ ] A terminal screenshot of the leaderboard/confusion output is embedded
@@ -54,7 +54,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 - [ ] The run used NO secrets (the tests are offline) — confirm it passed without any API key
       configured. That's a selling point; mention it in the README.
 - [ ] If it was red, you read the log and fixed the cause (usually a missing dep in
-      `build_from_scratch/requirements.txt`), then re-ran to green.
+      `requirements.txt`), then re-ran to green.
 
 ## Repo pinned
 

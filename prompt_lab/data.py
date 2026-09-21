@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 # data/ sits next to this package's parent (the project root), so climb two
-# levels: prompt_lab/ -> build_from_scratch/ -> and look for data/ there.
+# levels: prompt_lab/ -> the repo root -> and look for data/ there.
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 
 

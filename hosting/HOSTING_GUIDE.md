@@ -18,10 +18,9 @@ Here's the whole plan, so you know where this is going:
 3. **(Optional) a live demo** — a small Streamlit app that shows the leaderboard in a browser,
    hosted free on Hugging Face Spaces or Streamlit Community Cloud.
 
-The real code lives in the `build_from_scratch/` folder. Unlike a single-folder project, here
-the repo root will be the **whole project folder** (`03-prompt-engineering-lab`) and the code
-sits one level down in `build_from_scratch/`. That's why a few paths below have a
-`build_from_scratch/` prefix — keep an eye on that, it's the one thing that trips people up.
+The real code lives at the repo root: `prompt_lab/`, `tests/`, `generate_data.py`, and
+`requirements.txt` sit directly next to this `hosting/` folder, so no path below needs a
+subfolder prefix.
 
 A note on the command: this guide uses `python -m prompt_lab ...`, because that's how the
 package runs. After a `pip install -e .` you can also type `prompt-lab ...` directly. Both do
@@ -77,7 +76,7 @@ This is the part that bites people, so read it before you touch any Git command.
 
 Some files belong on GitHub. Some must never leave your laptop. The line between them is a
 file called `.gitignore` — a plain-text list of things Git pretends don't exist. The project
-already ships one at `build_from_scratch/.gitignore`. Open it and confirm it has at least
+already ships one at the repo root (`.gitignore`). Open it and confirm it has at least
 these lines:
 
 ```
@@ -136,9 +135,8 @@ and machine-specific junk stay out.**
 
 ## Step 2 — Make the local repo and commit
 
-The repo root is the **project folder**, `03-prompt-engineering-lab/` — the one that contains
-`build_from_scratch/` and this `hosting/` folder. Open PowerShell *there* (not inside
-`build_from_scratch/`).
+The repo root is the **project folder** - the one that contains
+`prompt_lab/` and this `hosting/` folder. Open PowerShell *there*.
 
 ```powershell
 git init
@@ -149,10 +147,9 @@ Creates an empty Git repo here — a hidden `.git` folder that will track your f
 git add .
 ```
 Stages every file in the folder *except* the ones `.gitignore` excludes. "Staging" means
-marking them to go into the next snapshot. Small catch: `.gitignore` lives inside
-`build_from_scratch/`, and by default it only governs its own folder and below. That's exactly
-what you want here — it protects `build_from_scratch/.env`, which is the file that matters. If
-you ever add a second `.env` elsewhere, give the repo root its own `.gitignore` too.
+marking them to go into the next snapshot. Small catch: `.gitignore` lives at the
+repo root, so it governs the whole repo. That's exactly
+what you want here - it protects `.env`, which is the file that matters.
 
 ```powershell
 git commit -m "Initial commit: Prompt Engineering Lab -- five prompt styles, scored"
@@ -239,13 +236,9 @@ A recruiter spends maybe twenty seconds on your repo before deciding whether to 
 The README is the first thing they see (GitHub renders it right under the file list), so it
 has to land the project fast.
 
-You already have a strong README inside `build_from_scratch/README.md` — it's the model to
-follow for voice and length. But that one renders only if someone opens the `build_from_scratch/`
-subfolder. Since your repo root is the project folder, GitHub shows the **root** `README.md`
-first. So write a short root `README.md` that sells the project and points down into
-`build_from_scratch/` for the full detail. (Or, if you'd rather keep one README, you can make
-`build_from_scratch/` the repo root instead — but the project has this `hosting/` folder and
-notebooks alongside it, so a root README that ties them together reads better.)
+You already have a strong README at the repo root (`README.md`) - it's the model to
+follow for voice and length. GitHub shows the **root** `README.md` first, so make sure its
+top sells the project and the full detail sits further down.
 
 Keep it skimmable. Five sections, in this order:
 
@@ -263,7 +256,6 @@ Keep it skimmable. Five sections, in this order:
 4. **How to run it.** The exact commands, copy-pasteable:
 
    ```powershell
-   cd build_from_scratch
    python -m venv .venv ; .\.venv\Scripts\Activate.ps1
    pip install -r requirements.txt
    python generate_data.py
@@ -287,7 +279,6 @@ This is the single highest-value thing you can add, because it lets someone judg
 in five seconds without cloning anything. Run the tool and copy its real output in.
 
 ```powershell
-cd build_from_scratch
 python -m prompt_lab
 ```
 
@@ -360,9 +351,9 @@ copy hosting\github_actions\ci.yml .github\workflows\ci.yml
 ```
 
 Open `.github\workflows\ci.yml` and read the comments — it's annotated line by line. The one
-thing worth understanding: because the repo root is the project folder, the workflow installs
-from `build_from_scratch/requirements.txt` and runs pytest with `working-directory:
-build_from_scratch`, so it "cd"s into the code folder before testing. Then commit and push:
+thing worth understanding: because the code sits at the repo root, the workflow installs
+from `requirements.txt` and runs pytest straight from the repo root, with no
+`working-directory`. Then commit and push:
 
 ```powershell
 git add .github\workflows\ci.yml
@@ -396,7 +387,7 @@ functions the CLI already calls, then draws the results with Streamlit widgets i
 
 ### 6a. A minimal `app.py`
 
-Put this file at the **repo root** (next to `build_from_scratch/`). It runs the offline
+Put this file at the **repo root** (next to `prompt_lab/`). It runs the offline
 evaluation and shows the leaderboard and confusion matrices as tables.
 
 ```python
@@ -408,8 +399,8 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-# The package lives in build_from_scratch/, so add that folder to the import path.
-sys.path.insert(0, str(Path(__file__).parent / "build_from_scratch"))
+# The package lives next to this file, so add this folder to the import path.
+sys.path.insert(0, str(Path(__file__).parent))
 
 from prompt_lab import CATEGORIES
 from prompt_lab.data import load_tickets, load_fewshot_examples
@@ -460,7 +451,7 @@ for s in scores:
 Try it locally first (from the project root):
 
 ```powershell
-cd build_from_scratch ; python generate_data.py ; cd ..
+python generate_data.py
 pip install streamlit pandas
 streamlit run app.py
 ```
@@ -475,7 +466,7 @@ missing, or (b) for the demo only, commit the two tiny CSVs (`data/tickets.csv`,
 kilobytes. To force-add a git-ignored file on purpose:
 
 ```powershell
-git add -f build_from_scratch\data\tickets.csv build_from_scratch\data\fewshot_examples.csv
+git add -f data\tickets.csv data\fewshot_examples.csv
 ```
 
 ### 6b. Host it free — Hugging Face Spaces
@@ -486,7 +477,7 @@ Hugging Face **Spaces** hosts small apps for free and has first-class Streamlit 
 2. Click **New Space**. Name it `prompt-engineering-lab`, pick **Streamlit** as the SDK, and
    leave it public.
 3. A Space *is* a Git repo. Push your project to it (it gives you the URL), or use the web UI
-   to upload `app.py`, the `build_from_scratch/` folder, and a `requirements.txt` that lists
+   to upload `app.py`, the `prompt_lab/` folder, and a `requirements.txt` that lists
    what the app needs — at minimum `streamlit`, `pandas`, `pydantic`.
 4. The Space builds and gives you a public URL like
    `https://huggingface.co/spaces/YOURNAME/prompt-engineering-lab`. That's your live demo.
@@ -542,7 +533,7 @@ Now it's one of the first things on your profile. Done.
 
 You don't need this for a portfolio, but it's worth knowing the next step exists.
 
-Because `build_from_scratch/` has a `pyproject.toml` with a `prompt-lab` console script, it's
+Because the repo root has a `pyproject.toml` with a `prompt-lab` console script, it's
 already shaped like a real installable package. Later, you could publish it to **PyPI** (the
 Python Package Index) so anyone can `pip install prompt-lab`, or let people run it in an
 isolated environment with **pipx**. That involves making a PyPI account, building the package,
@@ -558,7 +549,7 @@ provider (Google AI Studio, Groq, Anthropic) and **revoke/rotate it**, because i
 pushed, it's already public. Then remove the file from Git while keeping it on disk:
 
 ```powershell
-git rm --cached build_from_scratch\.env
+git rm --cached .env
 git commit -m "Remove committed .env"
 git push
 ```
@@ -605,5 +596,5 @@ install. Close every PowerShell window and open a fresh one.
 
 **CI is red but the tests pass on my laptop.** Read the Actions log bottom-up. The usual cause
 is a dependency you have installed locally but forgot to list in
-`build_from_scratch/requirements.txt` — CI starts from nothing, so it only has what's listed.
+`requirements.txt` - CI starts from nothing, so it only has what's listed.
 Add the missing package, commit, push, and it re-runs automatically.

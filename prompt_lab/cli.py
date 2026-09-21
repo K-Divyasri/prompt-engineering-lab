@@ -1,6 +1,6 @@
 """The `prompt-lab` command line tool.
 
-Examples (run from the build_from_scratch/ folder):
+Examples (run from the repo root):
 
     python -m prompt_lab                      # score all five styles, offline
     python -m prompt_lab --style few-shot     # just one style
